@@ -19,6 +19,14 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match.")
         return cleaned_data
 
+class UserLoginForm(forms.Form):
+    username = forms.CharField(max_length=150, required=True, widget=forms.TextInput(attrs={
+        'placeholder': 'Username'
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'placeholder': 'Password'
+    }))
+
 class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
