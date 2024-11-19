@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Home</title>
+</head>
+<body>
+    <h1>Welcome to the Online Library</h1>
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <a href="{% url 'home' %}">Logout</a>
+        <a href="{% url 'add_book' %}">Add Books</a>
+    {% else %}
+        <a href="{% url 'home' %}">Register</a>
+        <a href="{% url 'home' %}">Login</a>
+    {% endif %}
+
+    <h2>Available Books:</h2>
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }} by {{ book.author }} ({{ book.published_year }})</li>
+        {% empty %}
+            <li>No books available.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
