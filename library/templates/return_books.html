@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Return Books</title>
+</head>
+<body>
+    <h2>Your Borrowed Books</h2>
+    <ul>
+        {% for record in borrowed_books %}
+            <li>
+                <strong>{{ record.book.title }}</strong> by {{ record.book.author }}
+                <br>
+                Borrowed on: {{ record.borrow_date }}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="borrow_record_id" value="{{ record.id }}">
+                    <button type="submit">Return Book</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>You have no borrowed books to return.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>

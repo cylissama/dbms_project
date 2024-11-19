@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Borrow a Book</title>
+</head>
+<body>
+    <h2>Borrow a Book</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% else %}
+        <p>Are you sure you want to borrow <strong>{{ book.title }}</strong> by {{ book.author }}?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Confirm Borrow</button>
+        </form>
+    {% endif %}
+    <a href="{% url 'home' %}">Cancel</a>
+</body>
+</html>

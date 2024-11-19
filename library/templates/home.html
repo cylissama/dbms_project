@@ -5,28 +5,77 @@
     <title>Library Home</title>
 </head>
 <body>
-    <h1>Welcome to the Online Library</h1>
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}!</p>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-        {% if user.is_admin %}
-          <a href="{% url 'add_book' %}">Add Books</a>
+    <!-- Top Section -->
+    <div>
+        <h1>Welcome to the Online Library</h1>
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}!</p>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'register_user' %}">Register</a>
+            <a href="{% url 'login_user' %}">Login</a>
         {% endif %}
-    {% else %}
-        <a href="{% url 'register_user' %}">Register</a>
-        <a href="{% url 'login_user' %}">Login</a>
-    {% endif %}
+    </div>
 
-    <h2>Available Books:</h2>
-    <ul>
-        {% for book in books %}
-            <li>{{ book.title }} by {{ book.author }} ({{ book.published_year }})</li>
-        {% empty %}
-            <li>No books available.</li>
-        {% endfor %}
-    </ul>
+    <hr>
+
+    <!-- Bottom Section -->
+    <table width="100%" border="1" cellspacing="0" cellpadding="10">
+        <tr>
+            <!-- Left: Books Section -->
+            <td width="50%" valign="top">
+                <h2>Available Books:</h2>
+                <!-- Search Form -->
+                <form method="get" action="{% url 'home' %}">
+                    <input type="text" name="q" placeholder="Search books..." value="{{ query }}">
+                    <select name="filter_by">
+                        <option value="book_id" {% if filter_by == "book_id" %}selected{% endif %}>Book ID</option>
+                        <option value="title" {% if filter_by == "title" %}selected{% endif %}>Title</option>
+                        <option value="author" {% if filter_by == "author" %}selected{% endif %}>Author</option>
+                        <option value="isbn" {% if filter_by == "isbn" %}selected{% endif %}>ISBN</option>
+                        <option value="published_year" {% if filter_by == "published_year" %}selected{% endif %}>Publish Year</option>
+                        <option value="genre" {% if filter_by == "genre" %}selected{% endif %}>Genre</option>
+                        <option value="availability" {% if filter_by == "availability" %}selected{% endif %}>Availability</option>
+                    </select>
+                    <button type="submit">Search</button>
+                </form>
+                <ul>
+                    {% for book in books %}
+                        <li>
+                            <strong>{{ book.title }}</strong> ({{ book.published_year }})
+                            <br>
+                            <small>{{ book.author }}</small>
+                            <br>
+                            {% if book.availability %}
+                              <form method="get" action="{% url 'borrow_book' book.book_id %}">
+                                <button type="submit">Borrow Book</button>
+                              </form>
+                            {% else %}
+                              <span style="color: red;">Not Available</span>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>No books available.</li>
+                    {% endfor %}
+                </ul>
+            </td>
+
+            <!-- Right: Actions Section -->
+            <td width="50%" valign="top">
+                <h2>Actions</h2>
+                {% if user.is_authenticated %}
+                  {% if user.is_superuser %}
+                      <a href="{% url 'add_book' %}">Add Books</a>
+                  {% endif %}
+                  <a href="{% url 'return_books' %}">Return Books</a>
+                {% else %}
+                    <p>Please log in to access more features.</p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

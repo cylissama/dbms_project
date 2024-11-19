@@ -8,4 +8,6 @@ urlpatterns = [
     path('add-book/', add_book, name='add_book'),
     path('logout/', LogoutView.as_view(template_name='logged_out.html'), name='logout'),
     path('login/', login_user, name='login_user'),
-]
+    path('borrow/<int:book_id>/', borrow_book, name='borrow_book'),
+    path('return-books/', return_books, name='return_books'),
+    ]

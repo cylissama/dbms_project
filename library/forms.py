@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Book
+from .models import *
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -31,3 +31,8 @@ class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'author', 'isbn', 'published_year', 'genre', 'availability']
+
+class BorrowRecordForm(forms.ModelForm):
+    class Meta:
+        model = BorrowRecord
+        fields = ['borrow_date', 'return_date']
