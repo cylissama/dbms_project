@@ -21,30 +21,41 @@ Clone the project to your local machine:
 ```bash
 git clone https://github.com/your-username/online-library-system.git
 cd online-library-system
+```
 
-### To create the env 
-Win:
+### 2. Create an Enviornment
+
+Windows:
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
 Mac/Linux:
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-To install the requirements in the env:
+### 3. To install the requirements in the env:
+
+Windows:
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
+```
 
+Mac/Linux:
+```bash
 Apply migrations:
 python manage.py makemigrations
 python manage.py migrate
+```
 
-Run server:
-Win:
+### 4. Run the Server
+```bash
 python manage.py runserver
-Mac:
-python3 manage.py runserver
-
+```
 
 
 
