@@ -12,6 +12,8 @@
                 <strong>{{ record.book.title }}</strong> by {{ record.book.author }}
                 <br>
                 Borrowed on: {{ record.borrow_date }}
+                <br>
+                Due on: <strong>{{ record.return_date }}</strong>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="borrow_record_id" value="{{ record.id }}">

@@ -99,44 +99,55 @@ def edit_book(request, book_id):
 
     return render(request, 'edit_book.html', {'form': form, 'book': book})
 
+@staff_member_required  # Ensure only superusers or staff members can access this view
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
+    if request.method == "POST":
+        book.delete()
+        return redirect('home')  # Redirect to the homepage after deletion
+    return render(request, 'confirm_delete.html', {'book': book})
+
 @login_required
 def borrow_book(request, book_id):
-    # Get the book instance
     book = get_object_or_404(Book, book_id=book_id)
 
-    # Check if the book is available
     if not book.availability:
         return render(request, 'borrow_book.html', {
             'error': f"Sorry, '{book.title}' is currently unavailable."
         })
 
     if request.method == 'POST':
-        # Create the BorrowRecord for the logged-in user
+        # Create a BorrowRecord, letting the model handle borrow_date and return_date
         borrow_record = BorrowRecord.objects.create(
             book=book,
             user=request.user,
-            borrow_date=date.today(),
         )
+
         # Mark the book as unavailable
         book.availability = False
         book.save()
 
-        return redirect('home')  # Redirect to the homepage after borrowing
-    else:
-        return render(request, 'borrow_book.html', {'book': book})
+        return redirect('home')
+
+    return render(request, 'borrow_book.html', {'book': book})
 
 @login_required
 def return_books(request):
-    # Get all borrowed books for the logged-in user that haven't been returned
-    borrowed_books = BorrowRecord.objects.filter(user=request.user, return_date__isnull=True)
+    if request.user.is_superuser:
+        # Superusers see all borrowed books
+        borrowed_books = BorrowRecord.objects.filter()
+    else:
+        # Regular users see only their borrowed books
+        borrowed_books = BorrowRecord.objects.filter(user=request.user)
 
     if request.method == 'POST':
-        # Get the BorrowRecord ID from the POST request
+        # Handle returning a book
         borrow_record_id = request.POST.get('borrow_record_id')
-        borrow_record = BorrowRecord.objects.get(id=borrow_record_id, user=request.user)
+        borrow_record = BorrowRecord.objects.get(id=borrow_record_id)
 
-        # Return the book
-        borrow_record.return_book()
-        return redirect('return_books')  # Redirect to the same page after returning the book
+        # Only allow the logged-in user or superuser to return the book
+        if request.user == borrow_record.user or request.user.is_superuser:
+            borrow_record.return_book()
+        return redirect('return_books')
 
     return render(request, 'return_books.html', {'borrowed_books': borrowed_books})

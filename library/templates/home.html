@@ -42,6 +42,7 @@
                     </select>
                     <button type="submit">Search</button>
                 </form>
+                {% if user.is_authenticated %}
                 <ul>
                     {% for book in books %}
                         <li>
@@ -60,19 +61,35 @@
                               <form method="get" action="{% url 'edit_book' book.book_id %}" style="display:inline;">
                                 <button type="submit">Edit Book</button>
                               </form>
+                              <form method="get" action="{% url 'delete_book' book.book_id %}" style="display:inline;">
+                                <button type="submit" style="color: red;">Delete Book</button>
+                              </form>
                             {% endif %}
                         </li>
                     {% empty %}
                         <li>No books available.</li>
                     {% endfor %}
                 </ul>
+                {% else %}
+                    <p style="color: red;">To borrow books, please sign in.</p>
+                    {% for book in books %}
+                        <li>
+                            <strong>{{ book.title }}</strong> ({{ book.published_year }})
+                            <br>
+                            <small>{{ book.author }}</small>
+                            <br>
+                        </li>
+                      {% empty %}
+                        <li>No books available</li>
+                    {% endfor %}
+                {% endif %}
             </td>
 
             <!-- Right: Actions Section -->
             <td width="50%" valign="top">
                 <h2>Actions</h2>
                 {% if user.is_authenticated %}
-                <a href="{% url 'return_books' %}">Return Books</a>
+                <a href="{% url 'return_books' %}">View Checked Out Books</a>
                 <br>
                   {% if user.is_superuser %}
                     <h3>Admin Actions</h3>

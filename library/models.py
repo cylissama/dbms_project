@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User  # Import the built-in User model
 from datetime import date
+from datetime import timedelta
+
 class Book(models.Model):
     book_id = models.AutoField(primary_key=True, unique=True)
     title = models.CharField(max_length=255)
@@ -16,16 +18,17 @@ class Book(models.Model):
 class BorrowRecord(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)  # ForeignKey to Book
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # ForeignKey to User
-    borrow_date = models.DateField()  # Date when the book was borrowed
-    return_date = models.DateField(null=True, blank=True)  # Date when the book was returned, can be null
+    borrow_date = models.DateField(auto_now_add=True)  # Automatically set borrow date to today
+    return_date = models.DateField(null=True, blank=True)  # Date when the book is due to be returned
 
-
-    def return_book(self):
-        # Update the book's availability
-        self.book.availability = True
-        self.book.save()
-        self.return_date = date.today()
-        self.save()
+    def save(self, *args, **kwargs):
+        # Ensure the borrow_date is set to today if it's not already set
+        if not self.borrow_date:
+            from datetime import date
+            self.borrow_date = date.today()
+        if not self.return_date:  # Set return_date if it isn't already set
+            self.return_date = self.borrow_date + timedelta(days=7)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} borrowed {self.book.title} on {self.borrow_date}"

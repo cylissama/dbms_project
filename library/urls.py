@@ -11,4 +11,5 @@ urlpatterns = [
     path('borrow/<int:book_id>/', borrow_book, name='borrow_book'),
     path('return-books/', return_books, name='return_books'),
     path('edit/<int:book_id>/', edit_book, name='edit_book'),
+    path('delete/<int:book_id>/', delete_book, name='delete_book'),
     ]
