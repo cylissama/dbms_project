@@ -1,14 +1,20 @@
+{% load static %} <!-- Load the static tag -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Library Home</title>
-    {% load static %} <!-- Load the static tag -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- Top Section -->
-    <div>
-        <h1>Welcome to the Online Library</h1>
+    <div style="text-align: center; margin-top: 20px;">
+        <h1 style="border: 2px solid #8b0000; padding: 10px; background-color: #f0e68c;">  
+          <img src="{% static 'images/tree.gif' %}" alt="Tree Gif" width="40" height="40">
+          Welcome to the Online Library
+          <img src="{% static 'images/tree.gif' %}" alt="Tree Gif" width="40" height="40">
+        </h1>
+        <img src="{% static 'images/cat.gif' %}" alt="Cat Gif" width="500" height="20">
         {% if user.is_authenticated %}
             <p>Hello, {{ user.username }}!</p>
             <form method="post" action="{% url 'logout' %}" style="display: inline;">
@@ -19,8 +25,6 @@
             <a href="{% url 'register_user' %}">Register</a>
             <a href="{% url 'login_user' %}">Login</a>
         {% endif %}
-        <img src="{% static 'images/cart.gif' %}" alt="Cart Gif" width="100" height="100">
-
     </div>
 
     <hr>
@@ -29,8 +33,11 @@
     <table width="100%" border="1" cellspacing="0" cellpadding="10">
         <tr>
             <!-- Left: Books Section -->
-            <td width="50%" valign="top">
-                <h2>Available Books:</h2>
+            <td width="50%" valign="top" style="border: 3px solid #0000cd; padding: 10px;">
+                <h2 style="border: 2px solid #8b0000; padding: 5px; background-color: #f0e68c;">
+                    Available Books:
+                    <img src="{% static 'images/book2.gif' %}" alt="Book Gif" width="20" height="20">
+                </h2>
                 <!-- Search Form -->
                 <form method="get" action="{% url 'home' %}">
                     <input type="text" name="q" placeholder="Search books..." value="{{ query }}">
@@ -46,67 +53,72 @@
                     <button type="submit">Search</button>
                 </form>
                 {% if user.is_authenticated %}
-                <ul>
-                    {% for book in books %}
-                        <li>
-                            <strong>{{ book.title }}</strong> ({{ book.published_year }})
-                            <br>
-                            <small>{{ book.author }}</small>
-                            <br>
-                            {% if book.availability %}
-                              <form method="get" action="{% url 'borrow_book' book.book_id %}">
-                                <button type="submit">Borrow Book</button>
-                              </form>
-                            {% else %}
-                              <span style="color: red;">Not Available</span>
-                            {% endif %}
-                            {% if user.is_superuser %}
-                              <form method="get" action="{% url 'edit_book' book.book_id %}" style="display:inline;">
-                                <button type="submit">Edit Book</button>
-                              </form>
-                              <form method="get" action="{% url 'delete_book' book.book_id %}" style="display:inline;">
-                                <button type="submit" style="color: red;">Delete Book</button>
-                              </form>
-                            {% endif %}
-                        </li>
-                    {% empty %}
-                        <li>No books available.</li>
-                    {% endfor %}
-                </ul>
+<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <tr>
+        <th style="border: 2px solid #0000cd; padding: 10px;">Title</th>
+        <th style="border: 2px solid #0000cd; padding: 10px;">Author</th>
+        <th style="border: 2px solid #0000cd; padding: 10px;">Year</th>
+        <th style="border: 2px solid #0000cd; padding: 10px;">Action</th>
+    </tr>
+    {% for book in books %}
+    <tr>
+        <td style="border: 2px solid #0000cd; padding: 10px;">{{ book.title }}</td>
+        <td style="border: 2px solid #0000cd; padding: 10px;">{{ book.author }}</td>
+        <td style="border: 2px solid #0000cd; padding: 10px;">{{ book.published_year }}</td>
+        <td style="border: 2px solid #0000cd; padding: 10px;">
+            {% if book.availability %}
+                <form method="get" action="{% url 'borrow_book' book.book_id %}" style="display:inline;">
+                    <button type="submit">Borrow</button>
+                </form>
+            {% else %}
+                <span style="color: red;">Not Available</span>
+            {% endif %}
+            {% if user.is_superuser %}
+                <form method="get" action="{% url 'edit_book' book.book_id %}" style="display:inline;">
+                    <button type="submit">Edit</button>
+                </form>
+                <form method="get" action="{% url 'delete_book' book.book_id %}" style="display:inline;">
+                    <button type="submit" style="color: red;">Delete</button>
+                </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4" style="text-align: center; padding: 10px;">No books available.</td>
+    </tr>
+    {% endfor %}
+</table>
                 {% else %}
                     <p style="color: red;">To borrow books, please sign in.</p>
-                    {% for book in books %}
-                        <li>
-                            <strong>{{ book.title }}</strong> ({{ book.published_year }})
-                            <br>
-                            <small>{{ book.author }}</small>
-                            <br>
-                        </li>
-                      {% empty %}
-                        <li>No books available</li>
-                    {% endfor %}
                 {% endif %}
             </td>
 
             <!-- Right: Actions Section -->
-            <td width="50%" valign="top">
-                <h2>Actions</h2>
+            <td width="50%" valign="top" style="border: 3px solid #0000cd; padding: 10px;">
+                <h2 style="border: 2px solid #8b0000; padding: 5px; background-color: #f0e68c;">Actions
+                  <img src="{% static 'images/exclamation.gif' %}" alt="Exclamation Gif" width="20" height="20">
+                </h2>
                 {% if user.is_authenticated %}
-                <a href="{% url 'return_books' %}">View Checked Out Books</a>
-                <img src="{% static 'images/view_book.gif' %}" alt="viewbooks gif" width="100" height="100">
-
-                <br>
-                  {% if user.is_superuser %}
-                    <h3>Admin Actions</h3>
-                      <a href="{% url 'add_book' %}">Add Books</a>
-                  {% endif %}
+                    <a href="{% url 'return_books' %}">View Checked Out Books</a>
+                    <br>
+                    {% if user.is_superuser %}
+                        <h3>Admin Actions</h3>
+                        <a href="{% url 'add_book' %}">Add Books</a>
+                    {% endif %}
                 {% else %}
                     <p>Please log in to access more features.</p>
                 {% endif %}
                 <h3>Enjoy Your Library Experience!</h3>
-                <img src="{% static 'images/bookwizd.gif' %}" alt="Wizard Gif" width="100" height="100">
+                <img src="{% static 'images/dragread.gif' %}" alt="Dragon Gif" width="100" height="100">
             </td>
         </tr>
     </table>
+        <!-- Footer Section -->
+    <footer style="text-align: center; margin-top: 20px; border: 2px solid #8b0000; padding: 10px; background-color: #f0e68c;">
+        <p style="margin: 0;">Developed by: Cy Dixon & Nick Johnson</p>
+        <p style="margin: 0;">Contact: <a href="mailto:yourname@example.com">cy.dixon656@topper.wku.edu</a></p>
+        <p style="margin: 0;">© 2024 Online Library Project</p>
+    </footer>
 </body>
 </html>

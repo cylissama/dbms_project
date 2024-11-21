@@ -1,0 +1,29 @@
+body {
+    background-color: #f0e68c; /* Pale yellow fallback */
+    background-image: url("../images/snow.gif"); /* Path to your tile image */
+    background-repeat: repeat; /* Repeats the tile */
+    background-attachment: fixed; /* Ensures the background doesn't scroll */
+    font-family: "Times New Roman", serif;
+    font-size: 16px; /* Adjust as needed */
+    color: #000; /* Black text for a classic look */
+}
+table {
+    width: 100%;
+    border: 3px solid #0000cd; /* Bright blue border for table */
+    border-collapse: collapse; /* Make the borders look clean */
+    margin: 20px 0; /* Add spacing around the table */
+}
+
+td, th {
+    border: 2px solid #0000cd; /* Individual cell borders */
+    padding: 10px; /* Space inside the cells */
+    text-align: center; /* Center-align text */
+    background-color: #ffffff; /* White background for table cells */
+}
+
+h1, h2 {
+    border: 2px solid #8b0000; /* Dark red borders for headers */
+    padding: 10px;
+    background-color: #f0e68c; /* Pale yellow background */
+    text-align: center;
+}
