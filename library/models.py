@@ -30,6 +30,13 @@ class BorrowRecord(models.Model):
             self.return_date = self.borrow_date + timedelta(days=7)
         super().save(*args, **kwargs)
 
+
+    def return_book(self):
+        """Handles returning a book."""
+        self.book.availability = True  # Mark the book as available
+        self.book.save()  # Save the updated book status
+        self.delete()
+        
     def __str__(self):
         return f"{self.user.username} borrowed {self.book.title} on {self.borrow_date}"
 
