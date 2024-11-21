@@ -36,3 +36,8 @@ class BorrowRecordForm(forms.ModelForm):
     class Meta:
         model = BorrowRecord
         fields = ['borrow_date', 'return_date']
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'author', 'isbn', 'published_year', 'genre', 'availability']

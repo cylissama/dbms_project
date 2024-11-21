@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from datetime import date
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 def home_view(request):
     query = request.GET.get('q', '').strip()  # Get the search query, default to empty string
@@ -82,6 +83,21 @@ def add_book(request):
     else:
         form = AddBookForm()
     return render(request, 'add_book.html', {'form': form})
+
+
+@staff_member_required  # Ensure only superusers or staff members can access this view
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
+
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Redirect to home after editing
+    else:
+        form = BookForm(instance=book)
+
+    return render(request, 'edit_book.html', {'form': form, 'book': book})
 
 @login_required
 def borrow_book(request, book_id):

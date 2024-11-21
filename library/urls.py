@@ -10,4 +10,5 @@ urlpatterns = [
     path('login/', login_user, name='login_user'),
     path('borrow/<int:book_id>/', borrow_book, name='borrow_book'),
     path('return-books/', return_books, name='return_books'),
+    path('edit/<int:book_id>/', edit_book, name='edit_book'),
     ]
